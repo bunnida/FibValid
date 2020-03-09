@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
 
-
-EXIT_CODE_SUCCESS = 0
-EXIT_CODE_FAIL    = 1
-
-def _ExitError(Msg=None):
+EXIT_CODE_SUCCESS, EXIT_CODE_FAIL = 0, 1
+def _Exit(Msg=None, ErrCode=None):
     if Msg: print(Msg)
-    sys.exit(EXIT_CODE_FAIL)
 
-def _ExitNormal(Msg=None):
-    if Msg: print(Msg)
-    sys.exit(EXIT_CODE_SUCCESS)
+    import sys
+    sys.exit(EXIT_CODE_FAIL if ErrCode else EXIT_CODE_SUCCESS)
 
 
 def _LoadWebPageAndExtractBaseNumberPair(FibNumberIndex):
@@ -22,7 +16,7 @@ def _LoadWebPageAndExtractBaseNumberPair(FibNumberIndex):
         import urllib.request as url_req
         html = url_req.urlopen(url).read().decode('utf-8')
     except BaseException as E:
-        _ExitError("Could not access web page: '{}'".format(E))
+        _Exit("Could not access web page: '{}'".format(E), EXIT_CODE_FAIL)
 
     pairs = []
     import re
@@ -35,8 +29,10 @@ def _LoadWebPageAndExtractBaseNumberPair(FibNumberIndex):
 
 
 def main():
-    pairs = _LoadWebPageAndExtractBaseNumberPair(300)
+    pairs = _LoadWebPageAndExtractBaseNumberPair(999001)
     for p in pairs: print(p)
+
+    _Exit()
 
 
 if __name__ == '__main__':
