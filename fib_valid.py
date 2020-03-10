@@ -7,22 +7,18 @@ def _Exit(ErrCode, Msg=None):
     import sys
     sys.exit(ErrCode)
 
-def _LoadWebPageAndExtractBaseNumberPair(FibNumberIndex):
+def _load_web_page_and_extract_base_number_pairs(FibNumberIndex):
     url = 'http://www.protocol5.com/Fibonacci/{}.htm'.format(FibNumberIndex)
 
     import urllib.request as url_req
     try: html = url_req.urlopen(url).read().decode('utf-8')
     except BaseException as E: _Exit(EXIT_PROG_FAIL, "Could not access web page: '{}'".format(E))
 
-    pairs = []
     import re
-    for line in re.findall('<li><h4>.*?</li>', html):
-        pairs.append(  re.findall(' ([0-9]*):.*v>(.*)</d', line)[0]  )
-
-    return pairs
+    return [re.findall(' ([0-9]*):.*v>(.*)</d', line)[0] for line in re.findall('<li><h4>.*?</li>', html)]
 
 def main():
-    pairs = _LoadWebPageAndExtractBaseNumberPair(300)
+    pairs = _load_web_page_and_extract_base_number_pairs(300)
     for p in pairs: print(p)
 
     _Exit(EXIT_ANSWER_CORRECT)
